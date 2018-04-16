@@ -13,6 +13,8 @@ import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
+import org.springframework.context.annotation.PropertySource;
 
 /**
  * Created by ds on 2018-04-10.
@@ -22,19 +24,19 @@ import org.springframework.context.annotation.Configuration;
 @EnableRabbit
 public class RabbitMqConfig {
 
-    @Value("${spring.rabbitmq.host}")
-    private String rabbitHost;
+    private final Logger logger = LoggerFactory.getLogger(RabbitMqConfig.class);
 
-    @Value("${spring.rabbitmq.port}")
-    private int rabbitPort;
+    //@Value("${spring.rabbitmq.host}")
+    private String rabbitHost = "127.0.0.1";
 
-    @Value("${spring.rabbitmq.username}")
-    private String rabbitUsername;
+    //@Value("${spring.rabbitmq.port}")
+    private int rabbitPort = 5672;
 
-    @Value("${spring.rabbitmq.password}")
-    private String rabbitPassword;
+    //@Value("${spring.rabbitmq.username}")
+    private String rabbitUsername = "guest";
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    //@Value("${spring.rabbitmq.password}")
+    private String rabbitPassword = "guest";
 
     public static final String QUEUE_NAME = "queue";
 
@@ -46,6 +48,7 @@ public class RabbitMqConfig {
      */
     @Bean
     public ConnectionFactory connectionFactory() {
+        logger.info("create MQ connectionFactory");
         CachingConnectionFactory connectionFactory = new CachingConnectionFactory("localhost");
         connectionFactory.setHost(rabbitHost);
         connectionFactory.setPort(rabbitPort);
@@ -67,7 +70,7 @@ public class RabbitMqConfig {
         SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
         container.setConnectionFactory(connectionFactory());
         container.setQueueNames(QUEUE_NAME);
-//        container.setMessageListener(baseMesage());
+        //container.setMessageListener(baseMesage());
         container.setMessageConverter(jsonMessageConverter());
         return container;
     }
@@ -92,9 +95,9 @@ public class RabbitMqConfig {
         return new Jackson2JsonMessageConverter();
     }
 
-    @Bean
+   /* @Bean
     public BaseMesage baseMesage() {
         return new BaseMesage();
-    }
+    }*/
 
 }

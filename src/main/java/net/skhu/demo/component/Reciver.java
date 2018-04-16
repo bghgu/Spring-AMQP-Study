@@ -1,4 +1,4 @@
-package net.skhu.demo.controller;
+package net.skhu.demo.component;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
