@@ -31,7 +31,7 @@ MOM을 구현한 시스템
 
 MQ 시스템
 
-
+![mq.PNG]()
 
 Producer(생산자)가 Message를 Queue에 넣어두면 Comsumer(소비자)가 Message를 가져와 처리하는 방식
 
@@ -59,7 +59,7 @@ RabbitMQ는 우체국이자, 우체통이자, 우편부이다.
 
 windows는 Erlang, OpenSSL를 설치해야 한다.
 
-####기본 개념
+### 기본 개념
 
 1. Message 
 
