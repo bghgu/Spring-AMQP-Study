@@ -1,10 +1,8 @@
-package net.skhu.demo.rabbitMq;
+package net.skhu.demo.rabbitMqOfficalDocument;
 
 import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.Channel;
-
-import java.io.IOException;
 
 /**
  * Created by ds on 2018-04-10.

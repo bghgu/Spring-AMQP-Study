@@ -1,4 +1,4 @@
-package net.skhu.demo.rabbitMq;
+package net.skhu.demo.rabbitMqOfficalDocument;
 
 import com.rabbitmq.client.*;
 
@@ -7,6 +7,7 @@ import java.io.IOException;
 /**
  * Created by ds on 2018-04-10.
  */
+
 public class Recv {
     private final static String QUEUE_NAME = "hello";
 
