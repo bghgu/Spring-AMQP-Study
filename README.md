@@ -227,7 +227,7 @@ nohup mvn spring-boot:run&
 * [허원철의 개발 블로그](http://heowc.tistory.com/35?category=677973) - 메시지 큐
 * [허원철의 개발 블로그](http://heowc.tistory.com/36) - Spring AMQP
 * http://epicdevs.com/17 - Apache Kafka
-
+* [Spring AMQP](https://docs.spring.io/spring-amqp/docs/2.0.3.RELEASE/reference/html/) - Spring AMQP Offical Document
 ---
 
 
