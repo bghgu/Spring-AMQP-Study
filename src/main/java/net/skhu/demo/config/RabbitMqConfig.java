@@ -2,19 +2,15 @@ package net.skhu.demo.config;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.amqp.core.*;
+import org.springframework.amqp.core.AmqpAdmin;
+import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
-import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
-import org.springframework.context.annotation.PropertySource;
 
 /**
  * Created by ds on 2018-04-10.
@@ -38,13 +34,11 @@ public class RabbitMqConfig {
     //@Value("${spring.rabbitmq.password}")
     private String rabbitPassword = "guest";
 
-    public static final String QUEUE_NAME = "queue";
-
-    private static final String EXCHANGE = QUEUE_NAME + "-exchange";
+    private final String helloWorldQueueName = "hello.world.queue";
 
     /**
      * rabbit의 연결 관리
-     * @return
+     * @return RabbitMQConnectFactory 설정 객체
      */
     @Bean
     public ConnectionFactory connectionFactory() {
@@ -57,47 +51,35 @@ public class RabbitMqConfig {
         return connectionFactory;
     }
 
+    /**
+     * RQ 초기화?
+     * @return 초기화된 RabbitMQConnectFaceory객체와 Rabbit Template
+     */
+    @Bean
+    public AmqpAdmin amqpAdmin() {
+        return new RabbitAdmin(connectionFactory());
+    }
+
+    /**
+     * 메시지 송, 수신을 위한 abstraction 템플릿 제공
+     * @return Rabbit 사용을 위한 템플릿
+     */
     @Bean
     public RabbitTemplate rabbitTemplate() {
         RabbitTemplate template = new RabbitTemplate(connectionFactory());
-        template.setRoutingKey(QUEUE_NAME);
-        template.setMessageConverter(jsonMessageConverter());
+        //라우팅 키는 기본 교환을 위해 브로커에서 큐 이름으로 설정된다.
+        template.setRoutingKey(this.helloWorldQueueName);
+        //어디 큐로부터 동기 메시지를 받을지
+        template.setQueue(this.helloWorldQueueName);
         return template;
     }
 
+    /**
+     * 모든 큐는 defalut 값으로 direct exchange에 바인딩 된다.
+     */
     @Bean
-    public SimpleMessageListenerContainer container() {
-        SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
-        container.setConnectionFactory(connectionFactory());
-        container.setQueueNames(QUEUE_NAME);
-        //container.setMessageListener(baseMesage());
-        container.setMessageConverter(jsonMessageConverter());
-        return container;
+    public Queue helloWorldQueue() {
+        return new Queue(this.helloWorldQueueName);
     }
-
-    @Bean
-    public Queue queue() {
-        return new Queue(QUEUE_NAME, false);
-    }
-
-    @Bean
-    public TopicExchange exchange() {
-        return new TopicExchange(EXCHANGE);
-    }
-
-    @Bean
-    public Binding binding(Queue queue, TopicExchange exchange) {
-        return BindingBuilder.bind(queue).to(exchange).with(QUEUE_NAME);
-    }
-
-    @Bean
-    public Jackson2JsonMessageConverter jsonMessageConverter() {
-        return new Jackson2JsonMessageConverter();
-    }
-
-   /* @Bean
-    public BaseMesage baseMesage() {
-        return new BaseMesage();
-    }*/
 
 }
